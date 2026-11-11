@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[UNDERHANDS OF MINES] UI ASSET & SPRITE PACK [V1.0]</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            950: '#070f12',
+                            900: '#0b171c',
+                            800: '#11232b',
+                            700: '#1b3a45',
+                            600: '#265767',
+                            500: '#34788c',
+                            400: '#4ca3bc',
+                            300: '#72c4dc',
+                            200: '#a6e1f2',
+                            100: '#d7f3fb',
+                            neon: '#00ffcc',
+                            glow: '#00c3a0',
+                            darkbg: '#081014'
+                        }
+                    },
+                    fontFamily: {
+                        pixel: ['"Courier New", Courier, monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+        
+        body {
+            font-family: 'Share Tech Mono', monospace;
+            background-color: #070f12;
+            color: #72c4dc;
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(18, 45, 55, 0.3) 0%, rgba(7, 15, 18, 0.9) 100%),
+                linear-gradient(rgba(18, 55, 68, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(18, 55, 68, 0.05) 1px, transparent 1px);
+            background-size: 100% 100%, 20px 20px, 20px 20px;
+        }
+
+        /* Pixel border simulation */
+        .pixel-box {
+            border: 2px solid #265767;
+            box-shadow: 
+                inset 1px 1px 0px 0px #34788c,
+                inset -1px -1px 0px 0px #0b171c,
+                2px 2px 0px 0px #050a0c;
+        }
+
+        .pixel-box-active {
+            border: 2px solid #34788c;
+            box-shadow: 
+                inset 1px 1px 0px 0px #0b171c,
+                inset -1px -1px 0px 0px #4ca3bc,
+                1px 1px 0px 0px #050a0c;
+            background-color: #11232b;
+        }
+
+        .pixel-btn {
+            border: 2px solid #34788c;
+            background-color: #16303a;
+            box-shadow: 
+                inset 1px 1px 0px 0px #4ca3bc,
+                inset -1px -1px 0px 0px #0b171c,
+                2px 2px 0px 0px #050a0c;
+            transition: all 0.05s ease;
+        }
+
+        .pixel-btn:hover {
+            background-color: #1b3a45;
+            border-color: #4ca3bc;
+            color: #a6e1f2;
+        }
+
+        .pixel-btn:active, .pixel-btn.pressed {
+            background-color: #0b171c;
+            box-shadow: 
+                inset 1px 1px 0px 0px #0b171c,
+                inset -1px -1px 0px 0px #265767,
+                1px 1px 0px 0px #050a0c;
+            transform: translate(1px, 1px);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b171c;
+            border: 1px solid #1b3a45;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #265767;
+            border: 1px solid #34788c;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #34788c;
+        }
+
+        .scanlines {
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0, 0, 0, 0.3) 50%,
+                rgba(0, 0, 0, 0.3)
+            );
+            background-size: 100% 4px;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-cyber-300 selection:bg-cyber-600 selection:text-white p-3 md:p-6 relative">
+
+    <!-- Scanline overlay -->
+    <div class="absolute inset-0 pointer-events-none scanlines z-50 opacity-40"></div>
+
+    <!-- Notification Modal Box (Custom Alert replacement) -->
+    <div id="custom-modal" class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 hidden">
+        <div class="pixel-box bg-cyber-900 max-w-md w-full p-4 relative">
+            <div class="flex justify-between items-center bg-cyber-700 px-3 py-1 mb-4 border-b border-cyber-500">
+                <span class="text-cyber-100 font-bold tracking-wider text-sm flex items-center gap-2">
+                    <svg class="w-4 h-4 text-cyber-300 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                    SYSTEM NLERT
+                </span>
+                <button onclick="closeModal()" class="text-cyber-300 hover:text-white px-1 text-sm font-bold">✕</button>
+            </div>
+            <div class="py-3 px-2 text-cyber-200 text-sm leading-relaxed" id="modal-message">
+                Action executed successfully in the Underhands network.
+            </div>
+            <div class="mt-4 flex justify-end">
+                <button onclick="closeModal()" class="pixel-btn px-6 py-1.5 text-xs tracking-widest text-cyber-100 uppercase font-bold">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="max-w-7xl mx-auto space-y-6 relative z-10">
+        
+        <!-- Header Banner -->
+        <header class="pixel-box bg-cyber-900/90 p-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-3 h-3 bg-cyber-neon animate-ping rounded-none"></div>
+                <h1 class="text-lg md:text-xl font-black tracking-widest text-cyber-100 uppercase">
+                    [UNDERHANDS OF MINES] <span class="text-cyber-400">UI ASSET & SPRITE PACK</span> <span class="text-cyber-neon">[V1.0]</span>
+                </h1>
+            </div>
+            <div class="flex items-center gap-3 text-xs">
+                <span class="px-2 py-1 pixel-box bg-cyber-800 text-cyber-200">ENGINE: WEB_GL / HTML5</span>
+                <span class="px-2 py-1 pixel-box bg-cyber-700 text-cyber-neon font-bold">STATUS: ONLINE</span>
+            </div>
+        </header>
+
+        <!-- Top Section: Dialogues & Windows -->
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+            <!-- Dialog Box Panel -->
+            <div class="lg:col-span-5 pixel-box bg-cyber-900 p-4 flex flex-col justify-between">
+                <div class="flex justify-between items-center border-b border-cyber-700 pb-2 mb-3">
+                    <span class="text-xs uppercase tracking-wider text-cyber-400 font-bold">DIALOGUE SYSTEM</span>
+                    <span class="text-[10px] text-cyber-500">ID_01</span>
+                </div>
+                <div class="space-y-3 my-2">
+                    <div class="pixel-box bg-cyber-950 p-3 relative text-xs text-cyber-200 leading-relaxed">
+                        <p id="dialogue-text">"Welcome to the lower shafts, operative. Choose your protocol before initiating terminal override."</p>
+                        <!-- Speech pointer tail -->
+                        <div class="absolute -bottom-2 left-6 w-3 h-3 bg-cyber-950 border-r border-b border-cyber-600 transform rotate-45"></div>
+                    </div>
+                    <div class="pixel-box bg-cyber-800 p-2 flex justify-between items-center cursor-pointer hover:bg-cyber-700" onclick="rotateDialogue()">
+                        <span class="text-xs text-cyber-300">Select protocol target...</span>
+                        <svg class="w-4 h-4 text-cyber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </div>
+                </div>
+                <div class="pixel-box bg-cyber-950 p-2 text-xs text-cyber-400 h-10 flex items-center">
+                    <span class="animate-pulse mr-2">▶</span> <span id="dialogue-status">Awaiting user input command...</span>
+                </div>
+            </div>
+
+            <!-- Cyber System Status Panel -->
+            <div class="lg:col-span-7 pixel-box bg-cyber-900 p-4 flex flex-col justify-between">
+                <div class="flex justify-between items-center border-b border-cyber-700 pb-2 mb-3">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2 h-2 bg-cyber-400"></span>
+                        <span class="text-xs uppercase tracking-wider text-cyber-200 font-bold">CI SYSTEM STATUS</span>
+                    </div>
+                    <span class="text-xs text-cyber-400 tracking-widest font-mono">CYBERNETIC_INTERFACE</span>
+                </div>
+                
+                <div class="pixel-box bg-cyber-950 p-4 h-32 mb-3 overflow-y-auto font-mono text-xs space-y-1 text-cyber-300">
+                    <p class="text-cyber-neon">&gt; INITIALIZING SECURE NEURAL HANDSHAKE...</p>
+                    <p>&gt; MINE SECTOR 7: INTEGRITY 98.4%</p>
+                    <p>&gt; SYNAPTIC FREQUENCY: 4.12 GHz</p>
+                    <p class="text-cyber-200">&gt; WARNING: UNKNOWN ENTITY DETECTED IN SUB-LEVEL 3</p>
+                    <p class="text-cyber-400">&gt; READY FOR DEPLOYMENT SEQUENCE.</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <div class="pixel-box bg-cyber-950 p-2 text-center text-xs">
+                        <div class="text-cyber-500 text-[10px]">CPU LOAD</div>
+                        <div class="text-cyber-neon font-bold text-sm">42.8%</div>
+                    </div>
+                    <div class="pixel-box bg-cyber-950 p-2 text-center text-xs">
+                        <div class="text-cyber-500 text-[10px]">MEMORY SYNC</div>
+                        <div class="text-cyber-300 font-bold text-sm">1.82 GB / 4 GB</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Second Row: Windows, Parental Advisory & Alert -->
+        <section class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <!-- Window 1 -->
+            <div class="pixel-box bg-cyber-900 p-3">
+                <div class="flex justify-between items-center bg-cyber-700 px-2 py-1 mb-2 border-b border-cyber-500 text-xs">
+                    <span class="text-cyber-100 font-bold">TERMINAL_01</span>
+                    <div class="flex gap-1">
+                        <span class="w-2 h-2 bg-cyber-500 inline-block"></span>
+                        <span class="w-2 h-2 bg-cyber-400 inline-block"></span>
+                        <span class="w-2 h-2 bg-cyber-neon inline-block"></span>
+                    </div>
+                </div>
+                <div class="pixel-box bg-cyber-950 p-3 text-xs space-y-2 h-24 text-cyber-300">
+                    <div class="h-2 bg-cyber-800 rounded-none w-3/4"></div>
+                    <div class="h-2 bg-cyber-800 rounded-none w-1/2"></div>
+                    <div class="h-2 bg-cyber-800 rounded-none w-5/6"></div>
+                </div>
+            </div>
+
+            <!-- Window 2 -->
+            <div class="pixel-box bg-cyber-900 p-3">
+                <div class="flex justify-between items-center bg-cyber-700 px-2 py-1 mb-2 border-b border-cyber-500 text-xs">
+                    <span class="text-cyber-100 font-bold">CORE_LOGS</span>
+                    <div class="flex gap-1">
+                        <span class="w-2 h-2 bg-cyber-500 inline-block"></span>
+                        <span class="w-2 h-2 bg-cyber-400 inline-block"></span>
+                        <span class="w-2 h-2 bg-cyber-neon inline-block"></span>
+                    </div>
+                </div>
+                <div class="pixel-box bg-cyber-950 p-3 text-xs space-y-2 h-24 text-cyber-300">
+                    <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-cyber-neon"></span><span>Node active</span></div>
+                    <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-cyber-400"></span><span>Stream sync OK</span></div>
+                </div>
+            </div>
+
+            <!-- Parental Advisory Badge -->
+            <div class="pixel-box bg-cyber-900 p-3 flex flex-col items-center justify-center">
+                <div class="pixel-box bg-black border-2 border-cyber-400 p-3 text-center w-full shadow-inner">
+                    <div class="text-[10px] font-bold tracking-widest text-cyber-100">PARENTAL</div>
+                    <div class="text-lg font-black tracking-tighter text-red-500 my-0.5">ADVISORY</div>
+                    <div class="text-[9px] font-bold text-cyber-200 tracking-wider">EXPLICIT CONTENT</div>
+                </div>
+            </div>
+
+            <!-- NLERT Box -->
+            <div class="pixel-box bg-cyber-900 p-3 flex flex-col justify-between">
+                <div class="flex justify-between items-center bg-cyber-700 px-2 py-1 mb-2 border-b border-cyber-500 text-xs">
+                    <span class="text-cyber-100 font-bold">NLERT</span>
+                    <span class="text-[10px]">⚠️</span>
+                </div>
+                <div class="pixel-box bg-cyber-950 p-2 text-xs flex items-center gap-2 text-cyber-200">
+                    <span class="text-amber-400 text-base font-bold">⚠</span>
+                    <span>Sub-zero pressure drop detected in sector 4.</span>
+                </div>
+                <button onclick="showAlert('System alert verified and acknowledged.')" class="pixel-btn w-full py-1 text-xs text-cyber-100 font-bold uppercase mt-2">OK</button>
+            </div>
+        </section>
+
+        <!-- Buttons, Sliders & Controls Section -->
+        <section class="pixel-box bg-cyber-900 p-4 space-y-4">
+            <div class="flex justify-between items-center border-b border-cyber-700 pb-2">
+                <span class="text-xs uppercase tracking-wider text-cyber-200 font-bold">INTERACTIVE CONTROLS & STATES</span>
+                <span class="text-xs text-cyber-400">BUTTONS | SIPIRAL | PEN | SIGNATURE | VOLUME</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Button States (Normal, Hover, Pressed) -->
+                <div class="space-y-3">
+                    <div class="text-xs text-cyber-400 font-bold tracking-wider">BUTTON STATES</div>
+                    <div class="grid grid-cols-3 gap-2 text-center text-xs">
+                        <div class="space-y-1">
+                            <div class="text-[10px] text-cyber-500">NORMAL</div>
+                            <button onclick="showAlert('Accepted normal protocol.')" class="pixel-btn w-full py-2 text-cyber-100 font-bold text-xs uppercase">ACCEPT</button>
+                            <button class="pixel-btn w-full py-2 text-cyber-100 font-bold text-xs uppercase">ACCEPT</button>
+                        </div>
+                        <div class="space-y-1">
+                            <div class="text-[10px] text-cyber-500">HOVER</div>
+                            <button onclick="showAlert('Declined protocol action.')" class="pixel-btn bg-cyber-700 border-cyber-400 text-cyber-100 w-full py-2 font-bold text-xs uppercase">DECLINE</button>
+                            <button class="pixel-btn bg-cyber-700 border-cyber-400 text-cyber-100 w-full py-2 font-bold text-xs uppercase">DECLINE</button>
+                        </div>
+                        <div class="space-y-1">
+                            <div class="text-[10px] text-cyber-500">PRESSED</div>
+                            <button onclick="showAlert('Action cancelled.')" class="pixel-btn pressed w-full py-2 text-cyber-300 font-bold text-xs uppercase">CANCEL</button>
+                            <button onclick="showAlert('Applied configuration changes.')" class="pixel-btn bg-cyber-600 w-full py-2 text-cyber-neon font-bold text-xs uppercase">APPLY</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Custom Icons & Signature Buttons -->
+                <div class="space-y-3">
+                    <div class="text-xs text-cyber-400 font-bold tracking-wider">ICONS & TOOLS</div>
+                    <div class="flex items-center gap-3 flex-wrap">
+                        <button onclick="showAlert('Spiral icon activated. Neural loop engaged.')" class="pixel-box bg-cyber-950 p-2.5 rounded-full hover:border-cyber-neon transition flex items-center justify-center w-12 h-12">
+                            <span class="text-cyber-neon font-black text-base animate-spin">🌀</span>
+                        </button>
+                        <button onclick="showAlert('Spiral variant 2 active.')" class="pixel-box bg-cyber-950 p-2.5 rounded-full hover:border-cyber-neon transition flex items-center justify-center w-12 h-12">
+                            <span class="text-cyber-300 font-bold text-base">👁️</span>
+                        </button>
+                        <button onclick="showAlert('Pen tool selected for signature engraving.')" class="pixel-box bg-cyber-950 p-2.5 rounded-full hover:border-cyber-neon transition flex items-center justify-center w-12 h-12">
+                            <span class="text-cyber-200 text-sm">🖊️</span>
+                        </button>
+                        <button onclick="showAlert('Signature profile verified: Artist Node #88.')" class="pixel-box bg-cyber-950 px-3 py-1.5 rounded-full hover:border-cyber-neon transition flex items-center justify-center">
+                            <span class="text-xs font-serif italic text-cyber-neon font-bold tracking-wider">Artist</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Master Volume & Game Option Toggle -->
+                <div class="space-y-3">
+                    <div class="text-xs text-cyber-400 font-bold tracking-wider">MASTER VOLUME & OPTIONS</div>
+                    <div class="space-y-2">
+                        <div class="space-y-1">
+                            <div class="flex justify-between text-[11px] text-cyber-300">
+                                <span class="flex items-center gap-1">🔊 MASTER AUDIO</span>
+                                <span id="vol-val">75%</span>
+                            </div>
+                            <input type="range" min="0" max="100" value="75" oninput="updateVolume(this.value)" class="w-full accent-cyber-neon bg-cyber-950 h-2 cursor-pointer pixel-box">
+                        </div>
+                        <div class="space-y-1">
+                            <div class="flex justify-between text-[11px] text-cyber-300">
+                                <span class="flex items-center gap-1">💧 FLUID FEEDBACK</span>
+                                <span id="fluid-val">60%</span>
+                            </div>
+                            <input type="range" min="0" max="100" value="60" oninput="updateFluid(this.value)" class="w-full accent-cyber-400 bg-cyber-950 h-2 cursor-pointer pixel-box">
+                        </div>
+                        <div class="flex justify-between items-center pt-1">
+                            <span class="text-xs text-cyber-300">GAME OPTION</span>
+                            <button onclick="toggleGameOption(this)" id="toggle-btn" class="pixel-btn px-4 py-1 text-xs font-bold text-cyber-neon bg-cyber-950">
+                                ON [⏸]
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress & Status Bars Row -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2 border-t border-cyber-800">
+                <div class="space-y-1">
+                    <div class="text-[10px] text-cyber-500">ENERGY LEVEL 1</div>
+                    <div class="pixel-box bg-cyber-950 p-1 flex gap-1 h-5 items-center">
+                        <div class="w-full h-2.5 bg-cyber-neon shadow-[0_0_8px_#00ffcc]"></div>
+                        <div class="w-full h-2.5 bg-cyber-neon shadow-[0_0_8px_#00ffcc]"></div>
+                        <div class="w-full h-2.5 bg-cyber-neon shadow-[0_0_8px_#00ffcc]"></div>
+                        <div class="w-full h-2.5 bg-cyber-600"></div>
+                        <div class="w-full h-2.5 bg-cyber-600"></div>
+                    </div>
+                </div>
+                <div class="space-y-1">
+                    <div class="text-[10px] text-cyber-500">SYNAPSE CAPACITY BAR</div>
+                    <div class="pixel-box bg-cyber-950 p-1 flex items-center h-5">
+                        <div class="w-3/4 h-2.5 bg-gradient-to-r from-cyber-600 via-cyber-400 to-cyber-neon relative">
+                            <div class="absolute right-0 top-0 bottom-0 w-1 bg-white animate-pulse"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-1">
+                    <div class="text-[10px] text-cyber-500">RESERVE SYNC METER</div>
+                    <div class="pixel-box bg-cyber-950 p-1.5 flex items-center">
+                        <div class="w-full bg-cyber-900 h-2 relative overflow-hidden">
+                            <div class="absolute inset-y-0 left-0 w-5/6 bg-cyber-neon"></div>
+                        </div>
+                        <span class="text-[10px] text-cyber-200 ml-2 font-mono font-bold">83%</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Inventory Grid & Character Sprites Section -->
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+            
+            <!-- Inventory Items Grid (8x5) -->
+            <div class="lg:col-span-7 pixel-box bg-cyber-900 p-4 space-y-3">
+                <div class="flex justify-between items-center border-b border-cyber-700 pb-2">
+                    <span class="text-xs uppercase tracking-wider text-cyber-200 font-bold">INVENTORY & ITEM ASSET GRID</span>
+                    <span class="text-xs text-cyber-400" id="selected-item-label">CLICK ITEM TO INSPECT</span>
+                </div>
+
+                <div class="grid grid-cols-6 sm:grid-cols-8 gap-2 max-h-80 overflow-y-auto p-1 bg-cyber-950 pixel-box" id="inventory-grid">
+                    <!-- Populated via JavaScript -->
+                </div>
+
+                <div class="pixel-box bg-cyber-950 p-2.5 text-xs flex items-center justify-between">
+                    <div>
+                        <span class="text-cyber-500 text-[10px] block">ACTIVE ITEM INSPECTION</span>
+                        <span id="inspect-desc" class="text-cyber-200 font-bold">Select any artifact from the grid above.</span>
+                    </div>
+                    <button onclick="showAlert('Item transferred to active neural slot.')" class="pixel-btn px-3 py-1 text-[11px] text-cyber-100 uppercase font-bold">EQUIP</button>
+                </div>
+            </div>
+
+            <!-- Character & Sprite Animation Preview -->
+            <div class="lg:col-span-5 pixel-box bg-cyber-900 p-4 space-y-3 flex flex-col justify-between">
+                <div class="flex justify-between items-center border-b border-cyber-700 pb-2">
+                    <span class="text-xs uppercase tracking-wider text-cyber-200 font-bold">SPRITE & CHARACTER PACK</span>
+                    <span class="text-xs text-cyber-neon">ANIM_STATE: IDLE</span>
+                </div>
+
+                <!-- Sprite Showcase Canvas / Animation Box -->
+                <div class="pixel-box bg-cyber-950 p-4 flex flex-col items-center justify-center relative min-h-[160px]">
+                    <div class="absolute top-2 left-2 text-[10px] text-cyber-500">OPERATIVE_SPRITE_v1</div>
+                    
+                    <!-- Simulated Pixel Sprite with CSS / SVG -->
+                    <div id="sprite-container" class="flex flex-col items-center space-y-2 py-4">
+                        <div class="w-16 h-20 pixel-box bg-cyber-800 flex items-center justify-center relative overflow-hidden group cursor-pointer" onclick="cycleSpriteAnim()">
+                            <!-- Pixel character representation -->
+                            <div class="absolute inset-0 bg-gradient-to-b from-cyber-700/50 to-cyber-900 flex flex-col items-center justify-center">
+                                <div class="w-6 h-6 rounded-full bg-cyber-neon/80 flex items-center justify-center text-[10px] font-black text-black animate-pulse">🌀</div>
+                                <div class="w-8 h-8 bg-cyber-600 mt-1 rounded-sm border border-cyber-400"></div>
+                            </div>
+                        </div>
+                        <span class="text-[11px] text-cyber-300 font-bold" id="sprite-name">CYBER_THUG_01 (CLICK TO CYCLE)</span>
+                    </div>
+                </div>
+
+                <!-- Boss Card & Mini Drones -->
+                <div class="grid grid-cols-2 gap-2">
+                    <div class="pixel-box bg-cyber-950 p-2 text-center">
+                        <div class="text-[10px] text-cyber-500">DRONE UNITS</div>
+                        <div class="text-xs text-cyber-neon font-bold mt-1 flex justify-center gap-2">
+                            <span>🤖</span><span>🛸</span><span>⚙️</span>
+                        </div>
+                    </div>
+                    <div class="pixel-box bg-cyber-950 p-2 text-center">
+                        <div class="text-[10px] text-cyber-500">BOSS ENTITY</div>
+                        <div class="text-xs text-red-400 font-bold mt-1 tracking-wider">OVERLORD_X</div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-[11px] text-cyber-500 pt-2 pb-6">
+            [UNDERHANDS OF MINES] UI ASSET PACK • DESIGNED FOR IMMERSIVE CYBERNETIC ENVIRONMENTS • ALL RIGHTS RESERVED V1.0
+        </footer>
+
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Dialogue rotating messages
+        const dialogues = [
+            "\"Welcome to the lower shafts, operative. Choose your protocol before initiating terminal override.\"",
+            "\"Warning: Security drones have detected unauthorized neural access in Sector 9.\"",
+            "\"Acquire the dark crystal battery to power up the main elevator shaft.\"",
+            "\"Signature verified. Access granted to encrypted sub-basement vaults.\""
+        ];
+        let dialogueIndex = 0;
+
+        function rotateDialogue() {
+            dialogueIndex = (dialogueIndex + 1) % dialogues.length;
+            document.getElementById('dialogue-text').innerText = dialogues[dialogueIndex];
+            document.getElementById('dialogue-status').innerText = `Protocol state updated to index [${dialogueIndex + 1}]`;
+        }
+
+        // Custom Modal Alert
+        function showAlert(msg) {
+            document.getElementById('modal-message').innerText = msg;
+            document.getElementById('custom-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('custom-modal').classList.add('hidden');
+        }
+
+        // Sliders update
+        function updateVolume(val) {
+            document.getElementById('vol-val').innerText = val + '%';
+        }
+
+        function updateFluid(val) {
+            document.getElementById('fluid-val').innerText = val + '%';
+        }
+
+        function toggleGameOption(btn) {
+            if(btn.innerText.includes('ON')) {
+                btn.innerText = 'OFF [▶]';
+                btn.classList.remove('text-cyber-neon');
+                btn.classList.add('text-red-400');
+                showAlert('Game option toggled to OFF state.');
+            } else {
+                btn.innerText = 'ON [⏸]';
+                btn.classList.remove('text-red-400');
+                btn.classList.add('text-cyber-neon');
+                showAlert('Game option toggled to ON state.');
+            }
+        }
+
+        // Inventory Items Generator (48 items matching asset pack grid)
+        const itemIcons = ['🔋', '⚡', '💻', '🖲️', '🤖', '👁️', '🔦', '💉', '🔋', '💾', '🖊️', '✒️', '🖋️', '🖌️', '🖍️', '📝', '📓', '📘', '📗', '📖', '📓', '🌀', '📘', '🌀', '🌊', '🎨', '🎨', '🖌️', '缶', '🪙', '💵', '💳', '📊', '⚙️', '💎', '⛏️', '🔩', '⚙️', '🧊', '📦'];
+        const itemNames = [
+            'Energy Core Battery', 'High Voltage Cell', 'Neural Microchip', 'Motherboard Interface', 'Combat Drone Unit', 'Cyber Eye Scanner', 'Plasma Torch', 'Stim Injector',
+            'Storage Cell Alpha', 'Data Disk 0x99', 'Carbon Pen', 'Steel Nib Pen', 'Stylus Pro', 'Paintbrush Alpha', 'Marker Blue', 'Field Notebook',
+            'Secure Logbook', 'Manual Vol. 1', 'Manual Vol. 2', 'Cipher Codex', 'Spiral Diary', 'Vortex Talisman', 'Encrypted Journal', 'Spiral Core',
+            'Fluid Spray Can', 'Palette Standard', 'Artist Palette', 'Spray Nozzle', 'Aerosol Canister', 'Cryptocoin', 'Credits Note', 'Member Card',
+            'Financial Ledger', 'Gear Mechanism', 'Raw Diamond', 'Diamond Pickaxe', 'Hex Nut', 'Precision Cog', 'Solid Ice Ingot', 'Secure Cargo Crate'
+        ];
+
+        function initInventory() {
+            const grid = document.getElementById('inventory-grid');
+            grid.innerHTML = '';
+            for(let i = 0; i < 48; i++) {
+                const icon = itemIcons[i % itemIcons.length];
+                const name = itemNames[i % itemNames.length];
+                const div = document.createElement('div');
+                div.className = "pixel-box bg-cyber-900 hover:bg-cyber-700 h-10 w-10 sm:h-12 sm:w-12 flex items-center justify-center cursor-pointer transition relative group";
+                div.innerHTML = `<span class="text-base sm:text-lg select-none">${icon}</span>`;
+                div.onclick = () => {
+                    document.querySelectorAll('#inventory-grid > div').forEach(el => el.classList.remove('border-cyber-neon', 'bg-cyber-700'));
+                    div.classList.add('border-cyber-neon', 'bg-cyber-700');
+                    document.getElementById('inspect-desc').innerText = `${name} (Slot #${i+1}): Standard issue Underhands mine artifact.`;
+                    document.getElementById('selected-item-label').innerText = `SELECTED: SLOT #${i+1}`;
+                };
+                grid.appendChild(div);
+            }
+        }
+
+        // Sprite Cycle Animation
+        const sprites = [
+            { name: "CYBER_THUG_01 (IDLE)", icon: "🌀" },
+            { name: "CYBER_THUG_02 (WALKING)", icon: "🚶" },
+            { name: "CYBER_THUG_03 (SHOOTING)", icon: "🔫" },
+            { name: "DRONE_UNIT_X (FLYING)", icon: "🛸" },
+            { name: "OVERLORD_BOSS (ARMORED)", icon: "👹" }
+        ];
+        let spriteIndex = 0;
+
+        function cycleSpriteAnim() {
+            spriteIndex = (spriteIndex + 1) % sprites.length;
+            document.getElementById('sprite-name').innerText = sprites[spriteIndex].name;
+            const iconDiv = document.querySelector('#sprite-container .rounded-full');
+            if(iconDiv) iconDiv.innerText = sprites[spriteIndex].icon;
+        }
+
+        window.onload = function() {
+            initInventory();
+        };
+    </script>
+</body>
+</html>

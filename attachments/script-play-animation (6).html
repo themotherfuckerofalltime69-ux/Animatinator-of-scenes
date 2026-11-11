@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ScriptPlay Studio Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-base: #07090e;
+    --bg-surface: #0e1320;
+    --bg-surface-hover: #161e31;
+    --border-color: rgba(255, 255, 255, 0.08);
+    --border-bright: rgba(255, 255, 255, 0.16);
+    --accent-primary: #6366f1;
+    --accent-glow: rgba(99, 102, 241, 0.4);
+    --accent-success: #10b981;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --text-dim: #64748b;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  
+  body {
+    background-color: var(--bg-base);
+    color: var(--text-main);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 0;
+    overflow: hidden;
+    background-image: 
+      radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 60%),
+      radial-gradient(circle at 50% 100%, rgba(16, 185, 129, 0.08) 0%, transparent 60%);
+  }
+
+  .app-container {
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--bg-surface);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* Top Navigation Bar */
+  .top-banner {
+    background: linear-gradient(180deg, #111827, #0b0f19);
+    border-bottom: 1px solid var(--border-color);
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+    z-index: 10;
+  }
+
+  .brand-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .menu-toggle {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    transition: all 0.2s;
+  }
+  .menu-toggle:hover {
+    background: var(--bg-surface-hover);
+    color: var(--text-main);
+  }
+
+  .brand-logo {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 13px;
+    color: white;
+    box-shadow: 0 0 15px var(--accent-glow);
+  }
+
+  .brand-title {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: var(--text-main);
+  }
+
+  .brand-title span {
+    color: var(--accent-primary);
+  }
+
+  .project-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+  }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--accent-success);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--accent-success);
+  }
+
+  /* Main App Body with Collapsible Sidebar */
+  .app-body {
+    display: flex;
+    flex-grow: 1;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Collapsible Navigation Sidebar */
+  .nav-sidebar {
+    width: 260px;
+    background: #090d16;
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+    z-index: 5;
+  }
+
+  .nav-sidebar.collapsed {
+    transform: translateX(-260px);
+    width: 0;
+  }
+
+  .nav-section {
+    padding: 16px;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .nav-section-title {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+  }
+
+  .nav-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .nav-item:hover {
+    background: var(--bg-surface-hover);
+    color: var(--text-main);
+  }
+
+  .nav-item.active {
+    background: rgba(99, 102, 241, 0.15);
+    color: var(--accent-primary);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+  }
+
+  .nav-icon {
+    font-size: 14px;
+    width: 16px;
+    text-align: center;
+  }
+
+  /* Main Workspace Layout */
+  .workspace {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Dynamic Sub-pages */
+  .sub-page {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--bg-surface);
+    display: none;
+    flex-direction: column;
+    z-index: 4;
+    overflow-y: auto;
+    padding: 24px;
+  }
+
+  .sub-page.active {
+    display: flex;
+  }
+
+  .sub-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 16px;
+  }
+
+  .sub-title {
+    font-size: 18px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .btn-primary {
+    background: var(--accent-primary);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 0 12px var(--accent-glow);
+    transition: opacity 0.2s;
+  }
+  .btn-primary:hover { opacity: 0.9; }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  @media (max-width: 768px) {
+    .form-grid { grid-template-columns: 1fr; }
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+
+  .form-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .form-control {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 10px 12px;
+    color: var(--text-main);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    outline: none;
+  }
+  .form-control:focus { border-color: var(--accent-primary); }
+
+  .asset-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+  }
+
+  .asset-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .asset-card:hover {
+    border-color: var(--accent-primary);
+    background: var(--bg-surface-hover);
+  }
+
+  .asset-preview {
+    height: 100px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+  }
+
+  .asset-name {
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .asset-meta {
+    font-size: 10px;
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  @media (min-width: 768px) {
+    .workspace {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      overflow: hidden;
+    }
+  }
+
+  .viewport-column {
+    background: var(--bg-surface);
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    height: 100%;
+  }
+
+  /* Viewport */
+  .viewport-container {
+    background-color: #05070c;
+    flex-grow: 1;
+    min-height: 280px;
+    position: relative;
+    overflow: hidden;
+    background-image: 
+      linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+    background-size: 32px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .grid-floor {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 160px;
+    background-image: 
+      linear-gradient(to right, rgba(99, 102, 241, 0.2) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(99, 102, 241, 0.2) 1px, transparent 1px);
+    background-size: 32px 32px;
+    transform: perspective(400px) rotateX(60deg);
+    transform-origin: bottom;
+    pointer-events: none;
+    mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 90%);
+  }
+
+  .character {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 60px;
+    height: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    filter: drop-shadow(0 12px 24px rgba(0,0,0,0.7));
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s ease-out;
+  }
+
+  .character.floating {
+    animation: floatChar 3.5s ease-in-out infinite;
+  }
+
+  @keyframes floatChar {
+    0%, 100% { transform: translate(-50%, -50%) translateY(0); }
+    50% { transform: translate(-50%, -50%) translateY(-6px); }
+  }
+
+  .character-head { 
+    width: 22px; 
+    height: 22px; 
+    background: linear-gradient(135deg, #c084fc, #9333ea); 
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.3);
+  }
+  .character-body { 
+    width: 34px; 
+    height: 36px; 
+    background: linear-gradient(135deg, #818cf8, #4f46e5); 
+    border-radius: 8px;
+    margin-top: 2px;
+    border: 1px solid rgba(255,255,255,0.3);
+  }
+  .character-legs { 
+    width: 26px; 
+    height: 14px; 
+    background: linear-gradient(135deg, #60a5fa, #2563eb); 
+    border-radius: 4px;
+    margin-top: 2px;
+    border: 1px solid rgba(255,255,255,0.3);
+  }
+
+  /* Control Bar */
+  .control-bar {
+    background-color: var(--bg-surface);
+    border-top: 1px solid var(--border-color);
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+
+  .control-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .player-btns {
+    display: flex;
+    gap: 6px;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 4px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+  }
+
+  .player-btn {
+    background: transparent;
+    color: var(--text-muted);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .player-btn:active {
+    background: var(--bg-surface-hover);
+    color: var(--text-main);
+  }
+
+  .player-btn.active { 
+    background: var(--accent-primary); 
+    color: #fff;
+    box-shadow: 0 0 12px var(--accent-glow);
+  }
+
+  .scrubber-container {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+  }
+
+  .timecode {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  .scrubber-track {
+    height: 12px;
+    background: rgba(0, 0, 0, 0.5);
+    position: relative;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+  }
+
+  .scrubber-fill {
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    width: 15%;
+    background: linear-gradient(90deg, var(--accent-primary), #a855f7);
+    border-radius: 5px;
+  }
+
+  .scrubber-thumb {
+    position: absolute;
+    top: -3px;
+    left: 15%;
+    width: 16px;
+    height: 16px;
+    background: #fff;
+    border: 2px solid var(--accent-primary);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--accent-glow);
+  }
+
+  /* Sidebar Tools */
+  .sidebar {
+    background-color: var(--bg-base);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    border-top: 1px solid var(--border-color);
+    overflow-y: auto;
+  }
+
+  @media (min-width: 768px) {
+    .sidebar {
+      border-top: none;
+      border-left: 1px solid var(--border-color);
+    }
+  }
+
+  .sidebar-section-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+  }
+
+  /* File Tree Animations */
+  .file-tree {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 10px;
+  }
+
+  .tree-node {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tree-folder-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-main);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid transparent;
+  }
+  .tree-folder-header:hover {
+    background: var(--bg-surface-hover);
+    border-color: var(--border-color);
+  }
+
+  .tree-children {
+    display: none;
+    flex-direction: column;
+    gap: 2px;
+    padding-left: 20px;
+    margin-top: 2px;
+  }
+
+  .tree-node.expanded .tree-children {
+    display: flex;
+  }
+
+  .tree-file {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+    background: transparent;
+    cursor: pointer;
+  }
+  .tree-file:hover {
+    background: var(--bg-surface-hover);
+    color: var(--text-main);
+  }
+  .tree-file.active {
+    background: rgba(99, 102, 241, 0.15);
+    color: var(--accent-primary);
+  }
+
+  .add-anim-btn {
+    background: transparent;
+    border: 1px dashed var(--border-color);
+    color: var(--text-dim);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    cursor: pointer;
+    text-align: left;
+    margin-top: 4px;
+  }
+  .add-anim-btn:hover {
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+    background: rgba(99, 102, 241, 0.05);
+  }
+
+  .script-input-group {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 12px;
+  }
+
+  .script-textarea {
+    background: transparent;
+    border: none;
+    color: #e2e8f0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    resize: none;
+    height: 70px;
+    width: 100%;
+    outline: none;
+    line-height: 1.5;
+  }
+
+  .timeline-slots {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+  }
+
+  .slot {
+    aspect-ratio: 1;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-dim);
+    min-height: 44px;
+    cursor: pointer;
+  }
+
+  .slot.active {
+    background: var(--accent-primary);
+    border-color: var(--accent-primary);
+    color: #fff;
+    box-shadow: 0 0 12px var(--accent-glow);
+  }
+
+  /* Controller Pad Area */
+  .controller-card {
+    background: rgba(255, 255, 255, 0.01);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .directional-pad {
+    width: 140px;
+    height: 140px;
+    background: #04060a;
+    border: 1px solid var(--border-bright);
+    border-radius: 50%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.6) inset;
+  }
+
+  .pad-center {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, var(--accent-primary), #a855f7);
+    border-radius: 50%;
+    box-shadow: 0 0 15px var(--accent-glow);
+    cursor: pointer;
+  }
+
+  .pad-btn {
+    position: absolute;
+    background: var(--bg-surface-hover);
+    border: 1px solid var(--border-bright);
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    cursor: pointer;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .pad-btn:active {
+    background: var(--accent-primary);
+    color: #fff;
+    border-color: var(--accent-primary);
+  }
+
+  .pad-btn.top { top: 4px; left: 50%; transform: translateX(-50%); width: 44px; height: 34px; border-radius: 14px 14px 4px 4px; }
+  .pad-btn.bottom { bottom: 4px; left: 50%; transform: translateX(-50%); width: 44px; height: 34px; border-radius: 4px 4px 14px 14px; }
+  .pad-btn.left { left: 4px; top: 50%; transform: translateY(-50%); width: 34px; height: 44px; border-radius: 14px 4px 4px 14px; }
+  .pad-btn.right { right: 4px; top: 50%; transform: translateY(-50%); width: 34px; height: 44px; border-radius: 4px 14px 14px 4px; }
+
+</style>
+</head>
+<body>
+
+<div class="app-container">
+  <!-- Top Navigation -->
+  <div class="top-banner">
+    <div class="brand-area">
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle Menu">≡</button>
+      <div class="brand-logo">SP</div>
+      <div class="brand-title">SCRIPTPLAY <span>STUDIO</span></div>
+    </div>
+    <div class="project-status">
+      <div class="status-dot" id="statusDot"></div>
+      <span id="statusText">SCENE_01</span>
+    </div>
+  </div>
+
+  <div class="app-body">
+    <!-- Collapsible Sidebar Menu -->
+    <div class="nav-sidebar" id="navSidebar">
+      <div class="nav-section">
+        <div class="nav-section-title">Generators & Director</div>
+        <div class="nav-list">
+          <button class="nav-item active" data-target="scene-director">
+            <span class="nav-icon">🎬</span> Scene Director
+          </button>
+          <button class="nav-item" data-target="character-gen">
+            <span class="nav-icon">👤</span> Character Asset Gen
+          </button>
+          <button class="nav-item" data-target="background-gen">
+            <span class="nav-icon">🌄</span> Background Generator
+          </button>
+          <button class="nav-item" data-target="obstacles-gen">
+            <span class="nav-icon">🚧</span> Obstacles Generator
+          </button>
+          <button class="nav-item" data-target="item-gen">
+            <span class="nav-icon">💎</span> Item Pickup Generator
+          </button>
+        </div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">Storage</div>
+        <div class="nav-list">
+          <button class="nav-item" data-target="assets-vault">
+            <span class="nav-icon">📦</span> Assets Vault
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Workspace Layout -->
+    <div class="workspace">
+      
+      <!-- Sub-pages for each function -->
+      <div class="sub-page" id="page-character-gen">
+        <div class="sub-header">
+          <div class="sub-title">👤 Character Asset Generator</div>
+          <button class="btn-primary" onclick="alert('Character compiled successfully!')">Generate Asset</button>
+        </div>
+        <div class="form-grid">
+          <div>
+            <div class="form-group">
+              <label class="form-label">Base Mesh</label>
+              <select class="form-control"><option>Biped Standard v2</option><option>Quadruped Heavy</option></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Style Rig</label>
+              <select class="form-control"><option>Cyberpunk Neon</option><option>Low Poly Retro</option></select>
+            </div>
+          </div>
+          <div>
+            <div class="form-group">
+              <label class="form-label">Script Hook</label>
+              <textarea class="form-control" style="height: 100px;">GEN.character({ mesh: "biped_base", style: "cyberpunk" });</textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-page" id="page-background-gen">
+        <div class="sub-header">
+          <div class="sub-title">🌄 Background Generator</div>
+          <button class="btn-primary" onclick="alert('Environment built!')">Render Skybox</button>
+        </div>
+        <div class="form-grid">
+          <div>
+            <div class="form-group">
+              <label class="form-label">Skybox Preset</label>
+              <select class="form-control"><option>Neon Sunset</option><option>Deep Space Grid</option></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Volumetric Fog</label>
+              <select class="form-control"><option>Enabled (Density 0.8)</option><option>Disabled</option></select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-page" id="page-obstacles-gen">
+        <div class="sub-header">
+          <div class="sub-title">🚧 Obstacles Generator</div>
+          <button class="btn-primary" onclick="alert('Obstacles spawned!')">Populate Sector</button>
+        </div>
+        <div class="form-grid">
+          <div>
+            <div class="form-group">
+              <label class="form-label">Density Profile</label>
+              <select class="form-control"><option>Medium Scatter</option><option>Dense Maze</option></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Material Type</label>
+              <select class="form-control"><option>Cyber Ruins</option><option>Industrial Steel</option></select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-page" id="page-item-gen">
+        <div class="sub-header">
+          <div class="sub-title">💎 Item Pickup Generator</div>
+          <button class="btn-primary" onclick="alert('Item archetype created!')">Save Pickup</button>
+        </div>
+        <div class="form-grid">
+          <div>
+            <div class="form-group">
+              <label class="form-label">Item Archetype</label>
+              <select class="form-control"><option>Plasma Core</option><option>Data Shard</option></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Emissive Glow</label>
+              <select class="form-control"><option>Pulse High</option><option>Constant Low</option></select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-page" id="page-assets-vault">
+        <div class="sub-header">
+          <div class="sub-title">📦 Assets Vault</div>
+          <button class="btn-primary" onclick="alert('Syncing vault with cloud...')">Sync All</button>
+        </div>
+        <div class="asset-grid">
+          <div class="asset-card">
+            <div class="asset-preview">🤖</div>
+            <div class="asset-name">CHARACTER_01</div>
+            <div class="asset-meta">v1.2.0 • 4.2 MB</div>
+          </div>
+          <div class="asset-card">
+            <div class="asset-preview">🌆</div>
+            <div class="asset-name">NEON_SUNSET</div>
+            <div class="asset-meta">v1.0.4 • 12.8 MB</div>
+          </div>
+          <div class="asset-card">
+            <div class="asset-preview">🔋</div>
+            <div class="asset-name">PLASMA_CORE</div>
+            <div class="asset-meta">v2.1.0 • 1.1 MB</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Viewport & Timeline Controls -->
+      <div class="viewport-column" id="mainWorkspaceContent">
+        <div class="viewport-container" id="viewport">
+          <div class="grid-floor"></div>
+          <div class="character floating" id="character">
+            <div class="character-head"></div>
+            <div class="character-body"></div>
+            <div class="character-legs"></div>
+          </div>
+        </div>
+
+        <!-- Playback Control Bar -->
+        <div class="control-bar">
+          <div class="scrubber-container">
+            <div class="timecode">
+              <span id="currentTimecode">00:04:12</span>
+              <span>00:30:00</span>
+            </div>
+            <div class="scrubber-track" id="scrubberTrack">
+              <div class="scrubber-fill" id="scrubberFill"></div>
+              <div class="scrubber-thumb" id="scrubberThumb"></div>
+            </div>
+          </div>
+
+          <div class="control-actions">
+            <div class="player-btns">
+              <button class="player-btn" id="btnFirst">⏮</button>
+              <button class="player-btn" id="btnStop">⏹</button>
+              <button class="player-btn" id="btnStepBack">◀</button>
+              <button class="player-btn active" id="btnPlay">▶</button>
+              <button class="player-btn" id="btnStepFwd">▶▶</button>
+            </div>
+            <div class="player-btns">
+              <button class="player-btn" id="btnAudio">🔊</button>
+              <button class="player-btn" id="btnSettings">⚙</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar: Character Assets & Animations Tree -->
+      <div class="sidebar" id="mainSidebarContent">
+        <div>
+          <div class="sidebar-section-title">Character Asset Hierarchy</div>
+          <div class="file-tree" id="fileTree">
+            <!-- Node 1 -->
+            <div class="tree-node expanded" id="nodeChar1">
+              <div class="tree-folder-header" onclick="toggleFolder('nodeChar1')">
+                <span>📁</span> CHARACTER_01 (Mesh)
+              </div>
+              <div class="tree-children">
+                <div class="tree-file active" onclick="selectAnim(this, 'idle_loop')">
+                  <span>⚡ idle_loop.anim</span>
+                  <span>[120f]</span>
+                </div>
+                <div class="tree-file" onclick="selectAnim(this, 'walk_cycle')">
+                  <span>⚡ walk_cycle.anim</span>
+                  <span>[60f]</span>
+                </div>
+                <button class="add-anim-btn" onclick="addNewAnimation('nodeChar1')">+ Add Animation...</button>
+              </div>
+            </div>
+            <!-- Node 2 -->
+            <div class="tree-node" id="nodeChar2">
+              <div class="tree-folder-header" onclick="toggleFolder('nodeChar2')">
+                <span>📁</span> CHARACTER_02 (Droid)
+              </div>
+              <div class="tree-children">
+                <div class="tree-file" onclick="selectAnim(this, 'boot_sequence')">
+                  <span>⚡ boot_seq.anim</span>
+                  <span>[90f]</span>
+                </div>
+                <button class="add-anim-btn" onclick="addNewAnimation('nodeChar2')">+ Add Animation...</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="sidebar-section-title" id="activeToolTitle">Director Script</div>
+          <div class="script-input-group">
+            <textarea class="script-textarea" id="scriptInput" spellcheck="false">ANIM.play("idle_loop");
+ENTITY.spawn(CHARACTER_01);</textarea>
+          </div>
+        </div>
+
+        <div>
+          <div class="sidebar-section-title">Keyframes</div>
+          <div class="timeline-slots" id="timelineSlots">
+            <div class="slot active" data-frame="1">01</div>
+            <div class="slot" data-frame="2">02</div>
+            <div class="slot" data-frame="3">03</div>
+            <div class="slot" data-frame="4">04</div>
+            <div class="slot" data-frame="5">05</div>
+            <div class="slot" data-frame="+">+</div>
+          </div>
+        </div>
+
+        <!-- Directional Controller Card -->
+        <div class="controller-card">
+          <div class="sidebar-section-title" style="margin-bottom: 0;">Kinematic Vector Pad</div>
+          <div class="directional-pad">
+            <button class="pad-btn top" id="padTop">▲</button>
+            <button class="pad-btn bottom" id="padBottom">▼</button>
+            <button class="pad-btn left" id="padLeft">◄</button>
+            <button class="pad-btn right" id="padRight">►</button>
+            <div class="pad-center" id="padCenter"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Collapsible Menu Logic
+  const menuToggle = document.getElementById('menuToggle');
+  const navSidebar = document.getElementById('navSidebar');
+  const navItems = document.querySelectorAll('.nav-item');
+  const activeToolTitle = document.getElementById('activeToolTitle');
+  const scriptInput = document.getElementById('scriptInput');
+
+  menuToggle.addEventListener('click', () => {
+    navSidebar.classList.toggle('collapsed');
+  });
+
+  const toolPrompts = {
+    'scene-director': 'ANIM.play("idle_loop");\nENTITY.spawn(CHARACTER_01);',
+    'character-gen': 'GEN.character({\n  mesh: "biped_base",\n  style: "cyberpunk"\n});',
+    'background-gen': 'GEN.environment({\n  skybox: "neon_sunset",\n  fog: true\n});',
+    'obstacles-gen': 'GEN.obstacleSet({\n  density: "medium",\n  type: "ruins"\n});',
+    'item-gen': 'GEN.pickup({\n  item: "plasma_core",\n  glow: true\n});',
+    'assets-vault': 'VAULT.query({\n  filter: "all_assets",\n  sync: true\n});'
+  };
+
+  const subPages = document.querySelectorAll('.sub-page');
+  const mainWorkspaceContent = document.getElementById('mainWorkspaceContent');
+  const mainSidebarContent = document.getElementById('mainSidebarContent');
+
+  navItems.forEach(item => {
+    item.addEventListener('click', () => {
+      navItems.forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+      const target = item.dataset.target;
+      activeToolTitle.textContent = item.textContent.trim();
+      if(toolPrompts[target]) {
+        scriptInput.value = toolPrompts[target];
+      }
+
+      // Handle sub-pages
+      subPages.forEach(p => p.classList.remove('active'));
+      if (target === 'scene-director') {
+        mainWorkspaceContent.style.display = 'flex';
+        mainSidebarContent.style.display = 'flex';
+      } else {
+        const page = document.getElementById(`page-${target}`);
+        if (page) {
+          mainWorkspaceContent.style.display = 'none';
+          mainSidebarContent.style.display = 'none';
+          page.classList.add('active');
+        }
+      }
+    });
+  });
+
+  // File Tree expandable & add animation functions
+  function toggleFolder(nodeId) {
+    const node = document.getElementById(nodeId);
+    node.classList.toggle('expanded');
+  }
+
+  function selectAnim(el, animName) {
+    document.querySelectorAll('.tree-file').forEach(f => f.classList.remove('active'));
+    el.classList.add('active');
+    scriptInput.value = `ANIM.play("${animName}");\nENTITY.updateBinding();`;
+  }
+
+  function addNewAnimation(nodeId) {
+    const node = document.getElementById(nodeId);
+    const childrenContainer = node.querySelector('.tree-children');
+    const animName = prompt("Enter new animation asset name:", "action_sequence");
+    if (!animName) return;
+
+    const newFile = document.createElement('div');
+    newFile.className = 'tree-file';
+    newFile.innerHTML = `<span>⚡ ${animName}.anim</span><span>[30f]</span>`;
+    newFile.onclick = function() { selectAnim(newFile, animName); };
+    
+    // Insert before the add button
+    const addBtn = childrenContainer.querySelector('.add-anim-btn');
+    childrenContainer.insertBefore(newFile, addBtn);
+  }
+
+  // Existing playback & control logic
+  const btnPlay = document.getElementById('btnPlay');
+  const btnStop = document.getElementById('btnStop');
+  const btnFirst = document.getElementById('btnFirst');
+  const character = document.getElementById('character');
+  const scrubberFill = document.getElementById('scrubberFill');
+  const scrubberThumb = document.getElementById('scrubberThumb');
+  const currentTimecode = document.getElementById('currentTimecode');
+  const statusDot = document.getElementById('statusDot');
+  const statusText = document.getElementById('statusText');
+
+  let isPlaying = true;
+  let progress = 15;
+  let animInterval = null;
+
+  function updatePlaybackState() {
+    if (isPlaying) {
+      btnPlay.innerHTML = '❚❚';
+      btnPlay.classList.add('active');
+      character.classList.add('floating');
+      statusDot.style.background = 'var(--accent-success)';
+      statusDot.style.boxShadow = '0 0 8px var(--accent-success)';
+      statusText.textContent = 'SCENE_01 [PLAY]';
+      startLoop();
+    } else {
+      btnPlay.innerHTML = '▶';
+      btnPlay.classList.remove('active');
+      character.classList.remove('floating');
+      statusDot.style.background = 'var(--text-dim)';
+      statusDot.style.boxShadow = 'none';
+      statusText.textContent = 'SCENE_01 [PAUSE]';
+      clearInterval(animInterval);
+    }
+  }
+
+  function startLoop() {
+    clearInterval(animInterval);
+    animInterval = setInterval(() => {
+      progress = (progress + 0.5) % 100;
+      updateScrubber(progress);
+    }, 100);
+  }
+
+  function updateTrackerTime(val) {
+    const totalSeconds = Math.floor((val / 100) * 30);
+    const mins = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+    const secs = String(totalSeconds % 60).padStart(2, '0');
+    currentTimecode.textContent = `00:${mins}:${secs}`;
+  }
+
+  function updateScrubber(val) {
+    scrubberFill.style.width = val + '%';
+    scrubberThumb.style.left = val + '%';
+    updateTrackerTime(val);
+  }
+
+  btnPlay.addEventListener('click', () => {
+    isPlaying = !isPlaying;
+    updatePlaybackState();
+  });
+
+  btnStop.addEventListener('click', () => {
+    isPlaying = false;
+    progress = 0;
+    updateScrubber(progress);
+    updatePlaybackState();
+  });
+
+  btnFirst.addEventListener('click', () => {
+    progress = 0;
+    updateScrubber(progress);
+  });
+
+  const track = document.getElementById('scrubberTrack');
+  let isDragging = false;
+
+  track.addEventListener('pointerdown', (e) => {
+    isDragging = true;
+    handleScrub(e);
+  });
+
+  window.addEventListener('pointermove', (e) => {
+    if (isDragging) handleScrub(e);
+  });
+
+  window.addEventListener('pointerup', () => {
+    isDragging = false;
+  });
+
+  function handleScrub(e) {
+    const rect = track.getBoundingClientRect();
+    let x = e.clientX - rect.left;
+    let p = Math.max(0, Math.min(100, (x / rect.width) * 100));
+    progress = p;
+    updateScrubber(progress);
+  }
+
+  let charX = 0;
+  let charY = 0;
+  const speed = 8;
+
+  function moveChar(dx, dy) {
+    charX += dx;
+    charY += dy;
+    character.style.transform = `translate(calc(-50% + ${charX}px), calc(-50% + ${charY}px))`;
+  }
+
+  document.getElementById('padTop').addEventListener('click', () => moveChar(0, -speed));
+  document.getElementById('padBottom').addEventListener('click', () => moveChar(0, speed));
+  document.getElementById('padLeft').addEventListener('click', () => moveChar(-speed, 0));
+  document.getElementById('padRight').addEventListener('click', () => moveChar(speed, 0));
+  document.getElementById('padCenter').addEventListener('click', () => {
+    charX = 0;
+    charY = 0;
+    character.style.transform = `translate(-50%, -50%)`;
+  });
+
+  const slots = document.querySelectorAll('.slot');
+  slots.forEach(slot => {
+    slot.addEventListener('click', () => {
+      slots.forEach(s => s.classList.remove('active'));
+      if(slot.dataset.frame !== '+') {
+        slot.classList.add('active');
+        progress = (parseInt(slot.dataset.frame) - 1) * 20;
+        updateScrubber(progress);
+      }
+    });
+  });
+
+  startLoop();
+</script>
+</body>
+</html>
